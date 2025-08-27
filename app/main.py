@@ -47,7 +47,6 @@ def oracle(n: int = Query(..., ge=1, le=10_000_000)):
     idx = (n - 1) % L
     entry = DECK[perm[idx]]
     return JSONResponse({"date": key, "input_number": n, "result": entry["text"]})
-
 @app.get("/", response_class=HTMLResponse)
 def index():
     max_n = L
@@ -59,69 +58,66 @@ def index():
   body {{
     margin:0; padding:0;
     font-family: ui-serif, Georgia, "Times New Roman", serif;
-    color: #f0f2fa;
-    display:flex; flex-direction:column; align-items:center;
-    min-height:100vh; justify-content:flex-start; padding:3rem 1rem;
+    color:#eef2ff;
+    display:flex; flex-direction:column; align-items:center; justify-content:flex-start;
+    min-height:100vh; padding:3.2rem 1rem;
     background: url('/static/bg.png') no-repeat center center fixed;
     background-size: cover;
   }}
   h1 {{
-    font-weight: 600;
-    font-size: clamp(2.2rem, 5vw, 3rem);
-    margin:0 0 3rem 0;
+    font-weight:600;
+    font-size: clamp(2.4rem, 5.2vw, 3.2rem);
     letter-spacing:.01em;
-    text-shadow:0 0 14px rgba(180,220,255,.45);
+    margin:0 0 3.2rem 0; /* większy odstęp od ramki */
+    text-shadow: 0 0 18px rgba(170,210,255,.35);
   }}
+  /* SZKŁO */
   .oracle-box {{
-    width:min(560px, 100%);
-    background: rgba(0,0,0,.45);
-    border:1px solid rgba(255,255,255,.25);
-    border-radius:22px;
-    padding:1.6rem;
-    box-shadow:0 20px 50px rgba(0,0,0,.5);
+    width:min(560px, 92vw);
+    padding:1.6rem 1.4rem;
+    border-radius:24px;
+    background: linear-gradient(180deg, rgba(255,255,255,.14), rgba(255,255,255,.06));
+    backdrop-filter: blur(10px) saturate(115%);
+    -webkit-backdrop-filter: blur(10px) saturate(115%);
+    border:1px solid rgba(255,255,255,.28);
+    box-shadow:
+      0 20px 60px rgba(0,0,0,.45),
+      inset 0 0 120px rgba(180,220,255,.08);
     text-align:center;
   }}
   .oracle-title {{
-    font-size:1.2rem;
-    margin:0 0 1.2rem 0;
-    color:#f0f6ff;
+    font-size:1.2rem; margin:0 0 1.1rem 0; color:#f6f8ff;
   }}
-  form {{
-    display:flex; gap:.6rem; justify-content:center; flex-wrap:wrap;
-    margin-bottom:1rem;
-  }}
+  form {{ display:flex; gap:.6rem; justify-content:center; flex-wrap:wrap; margin:0 0 1rem 0; }}
   .num-input {{
-    width:min(300px, 85%);
+    width:min(280px, 85%);  /* trochę mniejsze okno */
     padding:.8rem 1rem;
-    border-radius:12px;
-    border:1px solid rgba(255,255,255,.2);
-    background:rgba(255,255,255,.15);
-    color:#f0f2fa;
-    font-size:1.05rem;
-    text-align:center;
-    outline:none;
+    border-radius:14px;
+    border:1px solid rgba(255,255,255,.28);
+    background: rgba(255,255,255,.16);
+    color:#eef2ff; font-size:1.05rem; text-align:center; outline:none;
   }}
-  input::-webkit-outer-spin-button,
-  input::-webkit-inner-spin-button {{ -webkit-appearance: none; margin: 0; }}
-  input[type=number] {{ -moz-appearance: textfield; }}
+  /* usuń spinnery */
+  input::-webkit-outer-spin-button, input::-webkit-inner-spin-button {{ -webkit-appearance:none; margin:0; }}
+  input[type=number] {{ -moz-appearance:textfield; }}
   button {{
-    padding:.8rem 1.1rem;
-    border-radius:12px;
-    border:1px solid rgba(255,255,255,.25);
-    background:linear-gradient(180deg, rgba(255,255,255,.25), rgba(255,255,255,.15));
-    color:#f0f2fa; font-size:1.05rem; cursor:pointer;
+    padding:.8rem 1.1rem; border-radius:14px; cursor:pointer;
+    border:1px solid rgba(255,255,255,.28);
+    background: linear-gradient(180deg, rgba(255,255,255,.22), rgba(255,255,255,.12));
+    color:#f0f4ff; font-size:1.05rem;
+    transition: box-shadow .15s ease, transform .06s ease;
   }}
-  button:hover {{ box-shadow:0 0 14px rgba(160,200,255,.3); }}
+  button:hover {{ box-shadow:0 0 18px rgba(160,210,255,.35); transform: translateY(-1px); }}
   .answer {{
     min-height:3.2rem;
-    padding:1rem;
-    border-radius:14px;
-    border:1px solid rgba(255,255,255,.25);
-    background:rgba(0,0,0,.35);
-    font-size:1.08rem;
-    line-height:1.45;
+    padding:1rem 1.1rem;
+    border-radius:16px;
+    border:1px solid rgba(255,255,255,.28);
+    background: linear-gradient(180deg, rgba(255,255,255,.12), rgba(255,255,255,.06));
+    box-shadow: inset 0 0 40px rgba(180,220,255,.06);
+    font-size:1.08rem; line-height:1.46; text-align:left;
   }}
-  .err {{ color:#ffb4b4; }}
+  .err {{ color:#ffb8c0; }}
 </style>
 
 <h1>Wyrocznia Kwantowa</h1>
@@ -154,10 +150,9 @@ def index():
       const r = await fetch('/oracle?n=' + encodeURIComponent(num));
       const data = await r.json();
       out.textContent = data.result || '—';
-    }} catch (err) {{
-      out.textContent = 'Błąd połączenia.';
-    }}
+    }} catch {{ out.textContent = 'Błąd połączenia.'; }}
   }});
 </script>
 </html>
 """
+
