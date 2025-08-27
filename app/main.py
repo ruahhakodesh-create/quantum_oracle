@@ -65,16 +65,18 @@ def index():
     min-height:100vh; justify-content:flex-start; padding:3rem 1rem;
   }}
   h1 {{
-    font-size: 2.4rem;
-    margin:0 0 2rem 0;
-    letter-spacing:.04em;
-    text-shadow:0 0 12px rgba(180,220,255,.5);
+    font-family: ui-serif, Georgia, "Times New Roman", serif;  /* miększy krój */
+    font-weight: 600;
+    font-size: clamp(2.2rem, 5vw, 3rem);
+    margin:0 0 2.2rem 0;
+    letter-spacing:.01em;
+    text-shadow:0 0 14px rgba(180,220,255,.45);
   }}
   .oracle-box {{
-    width:min(480px, 100%);
+    width:min(560px, 100%);
     background: rgba(255,255,255,.05);
     border:1px solid rgba(255,255,255,.15);
-    border-radius:20px;
+    border-radius:22px;
     padding:1.6rem;
     box-shadow:0 20px 50px rgba(0,0,0,.4);
     text-align:center;
@@ -83,37 +85,47 @@ def index():
     font-size:1.2rem;
     margin:0 0 1.2rem 0;
     color:#dbe6ff;
+    font-family: ui-serif, Georgia, "Times New Roman", serif;
   }}
   form {{
     display:flex; gap:.6rem; justify-content:center; flex-wrap:wrap;
     margin-bottom:1rem;
   }}
-  input[type=number] {{
-    padding:.7rem 1rem;
-    border-radius:10px;
+  /* Szersze pole + brak spinnerów */
+  .num-input {{
+    width:min(360px, 90%);
+    padding:.8rem 1rem;
+    border-radius:12px;
     border:1px solid rgba(255,255,255,.2);
     background:rgba(255,255,255,.08);
     color:#f0f2fa;
-    font-size:1rem;
-    width:200px; text-align:center;
+    font-size:1.05rem;
+    text-align:center;
+    outline:none;
   }}
+  /* ukrycie spinnerów, gdyby przeglądarka mimo wszystko je dodała */
+  input::-webkit-outer-spin-button,
+  input::-webkit-inner-spin-button {{ -webkit-appearance: none; margin: 0; }}
+  input[type=number] {{ -moz-appearance: textfield; }}
+
   button {{
-    padding:.7rem 1rem;
-    border-radius:10px;
+    padding:.8rem 1.1rem;
+    border-radius:12px;
     border:1px solid rgba(255,255,255,.2);
     background:linear-gradient(180deg, rgba(255,255,255,.12), rgba(255,255,255,.06));
-    color:#f0f2fa; font-size:1rem; cursor:pointer;
+    color:#f0f2fa; font-size:1.05rem; cursor:pointer;
   }}
   button:hover {{ box-shadow:0 0 14px rgba(160,200,255,.3); }}
   .answer {{
-    min-height:3rem;
+    min-height:3.2rem;
     padding:1rem;
-    border-radius:12px;
+    border-radius:14px;
     border:1px solid rgba(255,255,255,.15);
     background:rgba(255,255,255,.03);
-    font-size:1.05rem;
-    line-height:1.4;
+    font-size:1.08rem;
+    line-height:1.45;
   }}
+  .err {{ color:#ffb4b4; }}
 </style>
 
 <h1>Wyrocznia Kwantowa</h1>
@@ -121,7 +133,8 @@ def index():
 <div class="oracle-box">
   <div class="oracle-title">Co mnie czeka w najbliższym czasie</div>
   <form id="f" autocomplete="off">
-    <input id="n" type="number" min="1" max="{max_n}" step="1" placeholder="Wybierz liczbę od 1 do {max_n}" required>
+    <input id="n" class="num-input" type="text" inputmode="numeric" pattern="[0-9]*"
+           placeholder="wybierz od 1 do {max_n}" aria-label="wybierz od 1 do {max_n}" required>
     <button type="submit">Odsłoń</button>
   </form>
   <div id="out" class="answer"></div>
@@ -132,14 +145,16 @@ def index():
   const n = document.getElementById('n');
   const out = document.getElementById('out');
   const MAX = {max_n};
+
   f.addEventListener('submit', async (e) => {{
     e.preventDefault();
-    const num = parseInt(n.value, 10);
-    if (!Number.isInteger(num) || num < 1 || num > MAX) {{
-      out.textContent = 'Podaj liczbę z zakresu 1–' + MAX;
+    const raw = (n.value || '').trim();
+    const num = Number(raw);
+    if (!/^[0-9]+$/.test(raw) || !Number.isInteger(num) || num < 1 || num > MAX) {{
+      out.innerHTML = '<span class="err">Podaj liczbę 1–' + MAX + '.</span>';
       return;
     }}
-    out.textContent = '...';
+    out.textContent = '…';
     try {{
       const r = await fetch('/oracle?n=' + encodeURIComponent(num));
       const data = await r.json();
@@ -151,4 +166,3 @@ def index():
 </script>
 </html>
 """
-
