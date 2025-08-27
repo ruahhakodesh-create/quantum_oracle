@@ -1,2 +1,2 @@
-# app-main.py
+# quantum_oracle
 kwantowa wyrocznia
