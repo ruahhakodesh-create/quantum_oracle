@@ -48,101 +48,72 @@ def oracle(n: int = Query(..., ge=1, le=10_000_000)):
     idx = (n - 1) % L
     entry = DECK[perm[idx]]
     return JSONResponse({"date": key, "input_number": n, "result": entry["text"]})
-
 @app.get("/", response_class=HTMLResponse)
 def index():
-    max_n = L
-    today = day_key()
+    max_n = L  # X
     return f"""<!doctype html>
 <html lang="pl">
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Wyrocznia kwantowa</title>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Wyrocznia</title>
 <style>
   :root {{
-    --bg1:#0b1020; --bg2:#0d1b2a; --glow:rgba(120,190,255,.55);
-    --card:rgba(255,255,255,.06); --card-b:rgba(255,255,255,.12);
-    --txt:#eef3ff; --muted:#9fb3d9;
+    --bg:#070b17; --ink:#e6e9f4; --muted:#9aa4c7;
+    --glass: rgba(255,255,255,.06); --edge: rgba(255,255,255,.14);
   }}
-  html,body {{height:100%;margin:0}}
-  body {{
-    font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Ubuntu, "Helvetica Neue", Arial, sans-serif;
-    color: var(--txt);
-    background:
-      radial-gradient(1200px 800px at 20% 10%, #122043 0%, transparent 60%),
-      radial-gradient(800px 600px at 80% 90%, #1a2748 0%, transparent 60%),
-      linear-gradient(180deg, var(--bg1), var(--bg2));
-    display:flex; align-items:center; justify-content:center; padding:2rem;
-  }}
-  .wrap {{ width:min(720px,100%); text-align:center; }}
-  .title {{ font-size:clamp(1.6rem,2.6vw,2.2rem); margin:0 0 .3rem; text-shadow:0 0 18px var(--glow); }}
-  .sub {{ color:var(--muted); margin:0 0 1.2rem; font-size:.98rem; }}
-  .panel {{
-    background:var(--card); border:1px solid var(--card-b); border-radius:16px;
-    backdrop-filter:blur(6px); padding:1rem; box-shadow:0 10px 40px rgba(0,0,0,.35), 0 0 60px 0 var(--glow) inset;
-  }}
-  form {{ display:flex; gap:.6rem; justify-content:center; flex-wrap:wrap; margin:.25rem 0 1rem; }}
-  input[type=number] {{
-    width:220px; padding:.7rem .9rem; font-size:1rem; border-radius:10px; border:1px solid var(--card-b);
-    background:rgba(255,255,255,.08); color:var(--txt); outline:none;
-  }}
-  button {{
-    padding:.7rem 1rem; font-size:1rem; border-radius:10px; cursor:pointer; border:1px solid var(--card-b);
-    background:linear-gradient(180deg, rgba(255,255,255,.10), rgba(255,255,255,.06)); color:var(--txt);
-    transition:transform .08s ease, box-shadow .2s ease;
-  }}
-  button:hover {{ transform:translateY(-1px); box-shadow:0 0 18px var(--glow); }}
-  .hint {{ color:var(--muted); font-size:.9rem; margin:.3rem 0 .6rem; }}
-  .card {{
-    margin-top:.6rem; text-align:left; border:1px solid var(--card-b); border-radius:14px;
-    padding:1rem .95rem; background:rgba(255,255,255,.05); box-shadow:0 0 24px rgba(139,233,253,.15);
-    min-height:3.2rem;
-  }}
-  .meta {{ color:var(--muted); font-size:.85rem; margin-top:.4rem; }}
+  html,body {{ height:100%; margin:0; background: radial-gradient(60vw 60vh at 50% 10%, #101a36 0%, transparent 60%), radial-gradient(40vw 50vh at 80% 90%, #0f1b35 0%, transparent 60%), var(--bg); color:var(--ink); }}
+  body {{ display:grid; place-items:center; font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Ubuntu, "Helvetica Neue", Arial, sans-serif; }}
+  .wrap {{ width:min(800px, 92vw); }}
+  .panel {{ padding:2.2rem 1.6rem; border:1px solid var(--edge); border-radius:22px; background:var(--glass); backdrop-filter: blur(8px); box-shadow: 0 30px 80px rgba(0,0,0,.45), inset 0 0 120px rgba(140,200,255,.08); }}
+  .prompt {{ text-align:center; font-size:clamp(1.1rem, 2.6vw, 1.6rem); letter-spacing:.02em; margin:0 0 1.1rem 0; }}
+  form {{ display:flex; gap:.6rem; justify-content:center; }}
+  input[type=number] {{ width:220px; padding:.8rem 1rem; font-size:1.05rem; border-radius:12px; border:1px solid var(--edge); background:rgba(255,255,255,.08); color:var(--ink); outline:none; text-align:center; }}
+  button {{ padding:.8rem 1.1rem; font-size:1.05rem; border-radius:12px; border:1px solid var(--edge); background:linear-gradient(180deg, rgba(255,255,255,.12), rgba(255,255,255,.06)); color:var(--ink); cursor:pointer; }}
+  button:hover {{ box-shadow:0 0 22px rgba(140,200,255,.25); }}
+  .card {{ margin-top:1.2rem; border:1px solid var(--edge); border-radius:18px; padding:1.2rem 1.2rem; min-height:3.6rem; background:rgba(255,255,255,.05); }}
+  .oracle {{ font-family: ui-serif, Georgia, "Times New Roman", serif; font-size:clamp(1.15rem, 2.4vw, 1.6rem); line-height:1.5; }}
   .err {{ color:#ffb4b4; }}
+  /* dyskretna „pieczęć” */
+  .sigil {{ position:fixed; inset:auto -120px -120px auto; width:360px; height:360px; opacity:.18; filter: blur(0.3px); }}
 </style>
 
 <div class="wrap">
-  <h1 class="title">Wyrocznia kwantowa</h1>
-  <p class="sub">Dzisiejsze przyporządkowanie: <strong>{today}</strong>. Wpisz liczbę z zakresu <strong>1–{max_n}</strong>.</p>
-
   <div class="panel">
-    <form id="f">
-      <input id="n" type="number" min="1" max="{max_n}" step="1" placeholder="Wpisz liczbę 1–{max_n}" required>
+    <p class="prompt">Wybierz liczbę od <strong>1</strong> do <strong>{max_n}</strong></p>
+    <form id="f" autocomplete="off">
+      <input id="n" type="number" min="1" max="{max_n}" step="1" placeholder="1–{max_n}" required>
       <button type="submit">Odsłoń</button>
     </form>
-    <div class="hint">Jedna odpowiedź na dziś. Jutro układ będzie inny.</div>
-    <div id="out" class="card"></div>
-    <div id="meta" class="meta"></div>
+    <div id="out" class="card"><div id="txt" class="oracle"></div></div>
   </div>
 </div>
+
+<svg class="sigil" viewBox="0 0 100 100" aria-hidden="true">
+  <defs><radialGradient id="g" cx="50%" cy="50%" r="60%"><stop offset="0%" stop-color="#8ad1ff"/><stop offset="100%" stop-color="transparent"/></radialGradient></defs>
+  <circle cx="50" cy="50" r="48" fill="none" stroke="url(#g)" stroke-width="0.6"/>
+  <circle cx="50" cy="50" r="36" fill="none" stroke="url(#g)" stroke-width="0.5"/>
+  <path d="M50 6 L62 32 L94 36 L70 56 L76 86 L50 72 L24 86 L30 56 L6 36 L38 32 Z" fill="none" stroke="url(#g)" stroke-width="0.5"/>
+</svg>
 
 <script>
   const f = document.getElementById('f');
   const n = document.getElementById('n');
-  const out = document.getElementById('out');
-  const meta = document.getElementById('meta');
+  const txt = document.getElementById('txt');
   const MAX = {max_n};
-
   f.addEventListener('submit', async (e) => {{
     e.preventDefault();
     const num = parseInt(n.value, 10);
     if (!Number.isInteger(num) || num < 1 || num > MAX) {{
-      out.innerHTML = '<span class="err">Podaj liczbę z zakresu 1–' + MAX + '.</span>';
-      meta.textContent = '';
+      txt.innerHTML = '<span class="err">Podaj liczbę 1–' + MAX + '.</span>';
       return;
     }}
-    out.textContent = '...';
-    meta.textContent = '';
+    txt.textContent = '…';
     try {{
       const r = await fetch('/oracle?n=' + encodeURIComponent(num));
       if (!r.ok) throw new Error('HTTP ' + r.status);
       const data = await r.json();
-      out.textContent = data.result || 'Brak odpowiedzi';
-      meta.textContent = 'Liczba: ' + num + ' • Data: ' + (data.date || '{today}');
+      txt.textContent = data.result || '—';
     }} catch (err) {{
-      out.innerHTML = '<span class="err">Błąd połączenia. Spróbuj ponownie.</span>';
-      console.error(err);
+      txt.innerHTML = '<span class="err">Błąd połączenia.</span>';
     }}
   }});
 </script>
