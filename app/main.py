@@ -67,55 +67,56 @@ def index():
   h1 {{
     font-weight:600;
     font-size: clamp(2.4rem, 5.2vw, 3.2rem);
+    margin:0 0 3.2rem 0;
     letter-spacing:.01em;
-    margin:0 0 3.2rem 0; /* większy odstęp od ramki */
     text-shadow: 0 0 18px rgba(170,210,255,.35);
   }}
-  /* SZKŁO */
+  /* ramka: perłowe szkło */
   .oracle-box {{
     width:min(560px, 92vw);
-    padding:1.6rem 1.4rem;
+    padding:1.8rem 1.6rem;
     border-radius:24px;
-    background: linear-gradient(180deg, rgba(255,255,255,.14), rgba(255,255,255,.06));
-    backdrop-filter: blur(10px) saturate(115%);
-    -webkit-backdrop-filter: blur(10px) saturate(115%);
-    border:1px solid rgba(255,255,255,.28);
+    background: rgba(245,245,255,0.22); /* mleczny efekt */
+    backdrop-filter: blur(12px) saturate(120%);
+    -webkit-backdrop-filter: blur(12px) saturate(120%);
+    border:1px solid rgba(255,255,255,.35);
     box-shadow:
       0 20px 60px rgba(0,0,0,.45),
-      inset 0 0 120px rgba(180,220,255,.08);
+      inset 0 0 120px rgba(200,220,255,.12);
     text-align:center;
   }}
   .oracle-title {{
-    font-size:1.2rem; margin:0 0 1.1rem 0; color:#f6f8ff;
+    font-size:1.2rem; margin:0 0 1.1rem 0; color:#fefeff;
   }}
   form {{ display:flex; gap:.6rem; justify-content:center; flex-wrap:wrap; margin:0 0 1rem 0; }}
   .num-input {{
-    width:min(280px, 85%);  /* trochę mniejsze okno */
+    width:min(280px, 85%);
     padding:.8rem 1rem;
     border-radius:14px;
-    border:1px solid rgba(255,255,255,.28);
-    background: rgba(255,255,255,.16);
-    color:#eef2ff; font-size:1.05rem; text-align:center; outline:none;
+    border:1px solid rgba(255,255,255,.35);
+    background: rgba(255,255,255,.9);  /* perłowe pole */
+    color:#1a1c24;                     /* ciemniejszy tekst */
+    font-size:1.05rem; text-align:center; outline:none;
   }}
-  /* usuń spinnery */
   input::-webkit-outer-spin-button, input::-webkit-inner-spin-button {{ -webkit-appearance:none; margin:0; }}
   input[type=number] {{ -moz-appearance:textfield; }}
   button {{
     padding:.8rem 1.1rem; border-radius:14px; cursor:pointer;
-    border:1px solid rgba(255,255,255,.28);
-    background: linear-gradient(180deg, rgba(255,255,255,.22), rgba(255,255,255,.12));
-    color:#f0f4ff; font-size:1.05rem;
+    border:1px solid rgba(255,255,255,.35);
+    background: linear-gradient(180deg, rgba(255,255,255,.3), rgba(255,255,255,.15));
+    color:#fefeff; font-size:1.05rem;
     transition: box-shadow .15s ease, transform .06s ease;
   }}
-  button:hover {{ box-shadow:0 0 18px rgba(160,210,255,.35); transform: translateY(-1px); }}
+  button:hover {{ box-shadow:0 0 18px rgba(160,210,255,.4); transform: translateY(-1px); }}
   .answer {{
     min-height:3.2rem;
     padding:1rem 1.1rem;
     border-radius:16px;
-    border:1px solid rgba(255,255,255,.28);
-    background: linear-gradient(180deg, rgba(255,255,255,.12), rgba(255,255,255,.06));
-    box-shadow: inset 0 0 40px rgba(180,220,255,.06);
+    border:1px solid rgba(255,255,255,.35);
+    background: rgba(245,245,255,0.2);
+    box-shadow: inset 0 0 40px rgba(200,220,255,.1);
     font-size:1.08rem; line-height:1.46; text-align:left;
+    color:#fefeff;
   }}
   .err {{ color:#ffb8c0; }}
 </style>
@@ -155,4 +156,3 @@ def index():
 </script>
 </html>
 """
-
