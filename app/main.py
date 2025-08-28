@@ -141,7 +141,7 @@ def index():
   <form id="f" autocomplete="off">
     <input id="n" class="num-input" type="text" inputmode="numeric" pattern="[0-9]*"
            placeholder="wpisz liczbę od 1 do {max_n}" aria-label="wpisz liczbę od 1 do {max_n}" required>
-    <button type="submit">Odsłoń</button>
+    <button type="submit">Odczytaj</button>
   </form>
   <div id="out" class="answer"></div>
 </div>
