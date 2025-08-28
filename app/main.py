@@ -127,7 +127,7 @@ def index():
   <div class="oracle-title">Co mnie czeka w najbliższym czasie</div>
   <form id="f" autocomplete="off">
     <input id="n" class="num-input" type="text" inputmode="numeric" pattern="[0-9]*"
-           placeholder="wybierz od 1 do {max_n}" aria-label="wybierz od 1 do {max_n}" required>
+           placeholder="wpisz liczbę od 1 do {max_n}" aria-label="wpisz liczbę od 1 do {max_n}" required>
     <button type="submit">Odsłoń</button>
   </form>
   <div id="out" class="answer"></div>
