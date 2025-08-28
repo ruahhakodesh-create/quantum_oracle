@@ -224,12 +224,10 @@ def index():
     }}
   }});
 
-  resetBtn.addEventListener('click', () => {{
-    out.textContent = '';
-    n.value = '';
-    unlockUI();
-    n.focus();
-  }});
+    resetBtn.addEventListener('click', () => {
+    location.reload();
+  });
+
 </script>
 </html>
 """
