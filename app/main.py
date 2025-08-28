@@ -90,28 +90,27 @@ def index():
   }}
   form {{ display:flex; gap:.6rem; justify-content:center; flex-wrap:wrap; margin:0 0 1rem 0; }}
   .num-input {
-    width:min(280px, 85%);
-    padding:.8rem 1rem;
-    border-radius:14px;
-    border:1px solid rgba(255,255,255,.35);
-    background: rgba(255,255,255,.92);   /* perłowe pole */
-    color:#1a1c24;                       /* ciemniejszy tekst */
-    font-size:1.05rem;
-    text-align:center;
-    outline:none;
+    width: min(280px, 85%);
+    padding: .8rem 1rem;
+    border-radius: 14px;
+    border: 1px solid rgba(255,255,255,.35);
+    background: rgba(255,255,255,.92);
+    color: #1a1c24;
+    font-size: 1.05rem;
+    text-align: center;
+    outline: none;
     box-shadow:
-      0 4px 12px rgba(0,0,0,.25),        /* cień w dół */
-      0 0 16px rgba(180,220,255,.35);    /* delikatny glow */
+      0 4px 12px rgba(0,0,0,.25),
+      0 0 16px rgba(180,220,255,.35);
     transition: box-shadow .15s ease, transform .06s ease;
 }
 .num-input:focus {
     box-shadow:
       0 6px 16px rgba(0,0,0,.3),
-      0 0 22px rgba(180,220,255,.5);     /* mocniejszy glow przy fokusie */
+      0 0 22px rgba(180,220,255,.5);
     transform: translateY(-1px);
 }
-
-  input::-webkit-outer-spin-button, input::-webkit-inner-spin-button {{ -webkit-appearance:none; margin:0; }}
+input::-webkit-outer-spin-button, input::-webkit-inner-spin-button {{ -webkit-appearance:none; margin:0; }}
   input[type=number] {{ -moz-appearance:textfield; }}
   button {{
     padding:.8rem 1.1rem; border-radius:14px; cursor:pointer;
