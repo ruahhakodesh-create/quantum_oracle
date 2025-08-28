@@ -11,7 +11,7 @@ import json, os, hmac, hashlib, random
 APP_TZ = os.getenv("APP_TZ", "Europe/Warsaw")
 SECRET_SALT = os.getenv("SECRET_SALT", "domyslny_klucz")
 
-# ---- wczytanie talii ----
+# ---- dane ----
 DECK_PATH = Path(__file__).with_name("oracle.json")
 DECK = json.loads(DECK_PATH.read_text(encoding="utf-8"))
 L = len(DECK)
@@ -19,8 +19,9 @@ if L < 1:
     raise RuntimeError("oracle.json jest pusty — dodaj wpisy.")
 
 # ---- aplikacja ----
-app = FastAPI(title="Wyrocznia kwantowa")
-# montowanie plików statycznych (np. tło)
+app = FastAPI(title="Wyrocznia Kwantowa")
+
+# pliki statyczne (tło: app/static/bg.png -> /static/bg.png)
 app.mount("/static", StaticFiles(directory=str(Path(__file__).with_name("static"))), name="static")
 
 def day_key() -> str:
@@ -32,8 +33,7 @@ def seed_for_day(key: str) -> int:
 
 def permute_indices(seed: int, n: int) -> list[int]:
     idx = list(range(n))
-    rng = random.Random(seed)
-    rng.shuffle(idx)
+    random.Random(seed).shuffle(idx)
     return idx
 
 @app.get("/health")
@@ -47,6 +47,8 @@ def oracle(n: int = Query(..., ge=1, le=10_000_000)):
     idx = (n - 1) % L
     entry = DECK[perm[idx]]
     return JSONResponse({"date": key, "input_number": n, "result": entry["text"]})
+
+# ---------------- UI ----------------
 @app.get("/", response_class=HTMLResponse)
 def index():
     max_n = L
@@ -55,10 +57,13 @@ def index():
 <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Wyrocznia Kwantowa</title>
 <style>
+  :root {{
+    --ink:#eef2ff; --ink-dark:#1a1c24;
+  }}
+  html,body {{ height:100%; margin:0; }}
   body {{
-    margin:0; padding:0;
     font-family: ui-serif, Georgia, "Times New Roman", serif;
-    color:#eef2ff;
+    color: var(--ink);
     display:flex; flex-direction:column; align-items:center; justify-content:flex-start;
     min-height:100vh; padding:3.2rem 1rem;
     background: url('/static/bg.png') no-repeat center center fixed;
@@ -67,21 +72,21 @@ def index():
   h1 {{
     font-weight:600;
     font-size: clamp(2.4rem, 5.2vw, 3.2rem);
-    margin:0 0 3.2rem 0;
     letter-spacing:.01em;
+    margin:0 0 3.2rem 0; /* odstęp od ramki */
     text-shadow: 0 0 18px rgba(170,210,255,.35);
   }}
-  /* ramka: perłowe szkło */
   .oracle-box {{
     width:min(560px, 92vw);
     padding:1.8rem 1.6rem;
     border-radius:24px;
-    background: rgba(245,245,255,0.22); /* mleczny efekt */
+    /* perłowe szkło */
+    background: rgba(245,245,255,0.22);
     backdrop-filter: blur(12px) saturate(120%);
     -webkit-backdrop-filter: blur(12px) saturate(120%);
     border:1px solid rgba(255,255,255,.35);
     box-shadow:
-      0 20px 60px rgba(0,0,0,.45),
+      0 24px 60px rgba(0,0,0,.45),
       inset 0 0 120px rgba(200,220,255,.12);
     text-align:center;
   }}
@@ -89,13 +94,13 @@ def index():
     font-size:1.2rem; margin:0 0 1.1rem 0; color:#fefeff;
   }}
   form {{ display:flex; gap:.6rem; justify-content:center; flex-wrap:wrap; margin:0 0 1rem 0; }}
-  .num-input {
+  .num-input {{
     width: min(280px, 85%);
     padding: .8rem 1rem;
     border-radius: 14px;
     border: 1px solid rgba(255,255,255,.35);
-    background: rgba(255,255,255,.92);
-    color: #1a1c24;
+    background: rgba(255,255,255,.92);   /* perłowe pole */
+    color: var(--ink-dark);              /* ciemniejszy tekst */
     font-size: 1.05rem;
     text-align: center;
     outline: none;
@@ -103,15 +108,17 @@ def index():
       0 4px 12px rgba(0,0,0,.25),
       0 0 16px rgba(180,220,255,.35);
     transition: box-shadow .15s ease, transform .06s ease;
-}
-.num-input:focus {
+  }}
+  /* ukrycie spinnerów w niektórych przeglądarkach */
+  input::-webkit-outer-spin-button,
+  input::-webkit-inner-spin-button {{ -webkit-appearance: none; margin: 0; }}
+  input[type=number] {{ -moz-appearance: textfield; }}
+  .num-input:focus {{
     box-shadow:
       0 6px 16px rgba(0,0,0,.3),
       0 0 22px rgba(180,220,255,.5);
     transform: translateY(-1px);
-}
-input::-webkit-outer-spin-button, input::-webkit-inner-spin-button {{ -webkit-appearance:none; margin:0; }}
-  input[type=number] {{ -moz-appearance:textfield; }}
+  }}
   button {{
     padding:.8rem 1.1rem; border-radius:14px; cursor:pointer;
     border:1px solid rgba(255,255,255,.35);
@@ -150,6 +157,7 @@ input::-webkit-outer-spin-button, input::-webkit-inner-spin-button {{ -webkit-ap
   const n = document.getElementById('n');
   const out = document.getElementById('out');
   const MAX = {max_n};
+
   f.addEventListener('submit', async (e) => {{
     e.preventDefault();
     const raw = (n.value || '').trim();
@@ -163,7 +171,9 @@ input::-webkit-outer-spin-button, input::-webkit-inner-spin-button {{ -webkit-ap
       const r = await fetch('/oracle?n=' + encodeURIComponent(num));
       const data = await r.json();
       out.textContent = data.result || '—';
-    }} catch {{ out.textContent = 'Błąd połączenia.'; }}
+    }} catch {{
+      out.textContent = 'Błąd połączenia.';
+    }}
   }});
 </script>
 </html>
