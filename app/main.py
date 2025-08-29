@@ -224,9 +224,10 @@ def index():
     }}
   }});
 
-    resetBtn.addEventListener('click', () => {
+    resetBtn.addEventListener('click', () => {{
     location.reload();
-  });
+}});
+
 
 </script>
 </html>
