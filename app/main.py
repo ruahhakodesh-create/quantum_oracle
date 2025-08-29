@@ -77,14 +77,14 @@ def index():
     margin:0 0 0.6rem 0;
     text-shadow: 0 0 18px rgba(170,210,255,.35);
   }}
-  .subtitle {{
-    font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Ubuntu, Arial, sans-serif;
-    color: var(--cream);
-    opacity:.92;
-    font-size: clamp(1rem, 2.4vw, 1.15rem);
-    margin: 0 0 2.6rem 0;      /* większy odstęp od ramki */
-    letter-spacing:.01em;
-  }}
+  .subtitle {
+    font-family: 'Georgia', 'Times New Roman', serif;
+    font-size: 1.4rem;   /* było mniejsze, tu lekko zwiększone */
+    margin-bottom: 2rem;
+    color: #e8e0d0;      /* kremowy, ciemniejszy niż biały */
+    text-shadow: 0 0 6px rgba(0,0,0,0.5);
+}
+
   .oracle-box {{
     width:min(560px, 92vw);
     padding:1.8rem 1.6rem;
