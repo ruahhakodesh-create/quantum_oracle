@@ -77,13 +77,14 @@ def index():
     margin:0 0 0.6rem 0;
     text-shadow: 0 0 18px rgba(170,210,255,.35);
   }}
-  .subtitle {
-    font-family: 'Georgia', 'Times New Roman', serif;
-    font-size: 1.4rem;   /* było mniejsze, tu lekko zwiększone */
-    margin-bottom: 2rem;
-    color: #e8e0d0;      /* kremowy, ciemniejszy niż biały */
-    text-shadow: 0 0 6px rgba(0,0,0,0.5);
-}
+  .subtitle {{
+    font-family: Georgia, "Times New Roman", serif;
+    font-size: clamp(1.2rem, 2.6vw, 1.45rem);
+    margin: 0 0 2.6rem 0;
+    color: #e8e0d0;
+    text-shadow: 0 0 6px rgba(0,0,0,.5);
+}}
+
 
   .oracle-box {{
     width:min(560px, 92vw);
